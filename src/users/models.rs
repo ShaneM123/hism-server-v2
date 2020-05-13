@@ -17,10 +17,10 @@ pub struct Users {
 
 impl Users {
     pub fn find(conn: &SqliteConnection, id: i32) -> Result<Self, CustomError> {
-        let user = user::table.filter(users::id.eq(id)).first(conn)?;
+        let user = users::table.filter(users::id.eq(id)).first(conn)?;
         Ok(user)
     }
-    pub fn create_user(conn: &SqliteConnection, user: User) -> Result<Self, CustomerError> {
+    pub fn create_user(conn: &SqliteConnection, user: User) -> Result<Self, CustomError> {
         conn.transaction(|| {
             diesel::insert_into( users::table)
                 .values((
@@ -34,7 +34,7 @@ impl Users {
         })
     }
 
-    pub fn update(conn: &SqliteConnection, id: i32, user: User) -> Result<Self, CustomerError> {
+    pub fn update(conn: &SqliteConnection, id: i32, user: User) -> Result<Self, CustomError> {
         conn.transaction(|| {
             diesel::insert_into( users::table)
                 .values((users::id.eq(&id), users::username.eq(&user.username)))

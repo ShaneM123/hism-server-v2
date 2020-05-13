@@ -6,7 +6,7 @@ use crate::Pool;
 
 #[get("/users/{id}")]
 async fn find(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, CustomError>{
-    let conn = &pool.get.unwrap();
+    let conn = &pool.get().unwrap();
     let user = Users::find(conn, id.into_inner())?;
     Ok(HttpResponse::Ok().json(user))
 }
@@ -25,7 +25,7 @@ async fn update(
     id: web::Path<i32>,
     user: web::Json<User>,
 ) -> Result<HttpResponse, CustomError> {
-    let conn = &pool.get.unwrap();
+    let conn = &pool.get().unwrap();
 
     let user = Users::update(conn, id.into_inner(), user.into_inner())?;
     Ok(HttpResponse::Ok().json(user))

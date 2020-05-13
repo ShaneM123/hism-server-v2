@@ -27,7 +27,7 @@ impl fmt::Display for CustomError {
 }
 
 impl From<DieselError> for CustomError {
-    fn from(error: DieselError) -> CustomerError{
+    fn from(error: DieselError) -> CustomError{
         match error {
             DieselError::DatabaseError(_, err) => CustomError::new(409, err.message().to_string()),
             DieselError::NotFound => {
@@ -50,6 +50,6 @@ impl ResponseError for CustomError {
             true => self.error_message.clone(),
             false => "Internal server error".to_string(),
         };
-        HttpResponse::build(status_code).json(json!({ "message:" error_message}))
+        HttpResponse::build(status_code).json(json!({ "message": error_message }))
     }
 }
