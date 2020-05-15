@@ -3,13 +3,13 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
-use actix_web::{middleware, App, HttpServer, };
+use actix_web::{middleware, App, HttpServer, HttpResponse, http, web, HttpRequest };
 use dotenv::dotenv;
 use std::env;
 use diesel::r2d2::ConnectionManager;
 use diesel::SqliteConnection;
 use actix_web::error::PayloadError::Http2Payload;
-
+use actix_cors::Cors;
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 mod users;
@@ -34,6 +34,15 @@ async fn main() -> std::io::Result<()>{
     HttpServer::new(move|| {
         App::new()
             .data(pool.clone())
+            .wrap(
+                Cors::new()
+                    .allowed_origin("http://localhost:8080")
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600)
+                    .finish()
+            )
             .wrap(middleware::Logger::default())
             .configure(users::init_routes)
     })
