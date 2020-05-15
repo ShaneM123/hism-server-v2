@@ -10,7 +10,7 @@ async fn find(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse,
     let user = Users::find(conn, id.into_inner())?;
     Ok(HttpResponse::Ok().json(user))
 }
-#[get("/users")]
+#[post("/users")]
 async fn finduser(pool: web::Data<Pool>, username: web::Json<User>) -> Result<HttpResponse, CustomError>{
     let conn = &pool.get().unwrap();
     let user = Users::findusername(conn, username.into_inner())?;
