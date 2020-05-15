@@ -10,6 +10,12 @@ async fn find(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse,
     let user = Users::find(conn, id.into_inner())?;
     Ok(HttpResponse::Ok().json(user))
 }
+#[get("/users")]
+async fn finduser(pool: web::Data<Pool>, username: web::Json<User>) -> Result<HttpResponse, CustomError>{
+    let conn = &pool.get().unwrap();
+    let user = Users::findusername(conn, username.into_inner())?;
+    Ok(HttpResponse::Ok().json(user))
+}
 
 #[post("/users")]
 async fn create(pool: web::Data<Pool>, user: web::Json<User>) -> Result<HttpResponse, CustomError> {
@@ -41,6 +47,7 @@ async fn delete(pool: web::Data<Pool>,id: web::Path<i32>) -> Result<HttpResponse
 
 pub fn init_routes(config: &mut web::ServiceConfig) {
     config.service(find);
+    config.service(finduser);
     config.service(create);
     config.service(update);
     config.service(delete);
