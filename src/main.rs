@@ -10,7 +10,13 @@ use diesel::r2d2::ConnectionManager;
 use diesel::SqliteConnection;
 use actix_web::error::PayloadError::Http2Payload;
 use actix_cors::Cors;
+use std::fs::File;
+use std::io::BufReader;
+use rustls::internal::pemfile::{certs, rsa_private_keys};
+use rustls::{NoClientAuth, ServerConfig};
+
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
 
 mod users;
 mod schema;
@@ -22,6 +28,13 @@ async fn main() -> std::io::Result<()>{
 
     env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
+    let mut config = ServerConfig::new(NoClientAuth::new());
+    let cert_file = &mut BufReader::new(File::open("cert.pem").unwrap());
+    let key_file = &mut BufReader::new(File::open("key.pem").unwrap());
+    let cert_chain = certs(cert_file).unwrap();
+    let mut keys = rsa_private_keys(key_file).unwrap();
+    config.set_single_cert(cert_chain, keys.remove(0)).unwrap();
+
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let manager = ConnectionManager::<SqliteConnection>::new(database_url);
@@ -29,7 +42,7 @@ async fn main() -> std::io::Result<()>{
         .build(manager)
         .expect("Failed to create pool.");
 
-    let port = 8998;
+    let port = 8443;
     println!("starting http server at {:?}", port);
     HttpServer::new(move|| {
         App::new()
@@ -46,7 +59,7 @@ async fn main() -> std::io::Result<()>{
             .wrap(middleware::Logger::default())
             .configure(users::init_routes)
     })
-        .bind(("127.0.0.1",port))?
+        .bind_rustls("127.0.0.1:8443",config)?
         .run()
         .await
 
