@@ -27,3 +27,5 @@ r2d2 = "0.8"
 uuid = { version = "0.6", features = ["serde", "v4"] }
 actix-cors = "0.2.0"
 rustls = "0.16"
+rand = "0.7.3"
+rust-argon2 = "0.8"

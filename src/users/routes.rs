@@ -17,7 +17,7 @@ async fn finduser(pool: web::Data<Pool>, username: web::Json<User>) -> Result<Ht
     Ok(HttpResponse::Ok().json(user))
 }
 
-#[post("/users")]
+#[post("/createusers")]
 async fn create(pool: web::Data<Pool>, user: web::Json<User>) -> Result<HttpResponse, CustomError> {
     let conn = &pool.get().unwrap();
 
