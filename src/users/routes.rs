@@ -45,6 +45,7 @@ async fn delete(pool: web::Data<Pool>,id: web::Path<i32>) -> Result<HttpResponse
     Ok(HttpResponse::Ok().json(json!({"deleted": deleted_user})))
 }
 
+#[allow(dead_code)]
 pub fn init_routes(config: &mut web::ServiceConfig) {
     config.service(find);
     config.service(finduser);

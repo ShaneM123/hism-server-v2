@@ -33,8 +33,7 @@ impl Users {
             .select((users::id, users::username, users::password,))
             .first::<Users>(conn)?;
         argon2::verify_encoded(&theuser.password,&user.password.as_bytes())
-            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)))
-        ;
+            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)));
         Ok(theuser)
     }
     pub fn create_user(conn: &SqliteConnection, mut user: User) -> Result<Self, CustomError> {
@@ -80,16 +79,22 @@ impl Users {
         let res = diesel::delete( users::table.filter(users::id.eq(id))).execute(conn)?;
         Ok(res)
     }
+
+
+    pub fn verify_password(&self, password: &[u8]) -> Result<bool, CustomError> {
+        argon2::verify_encoded(&self.password, password)
+            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)))
+    }
 }
 
 
 impl User {
-    fn from(user: User) -> User {
+/*    fn from(user: User) -> User {
         User {
             username: user.username,
             password: user.password,
         }
-}
+}*/
     pub fn hash_password(&mut self) -> Result<(), CustomError> {
         let salt: [u8; 32] = rand::thread_rng().gen();
         let config = Config::default();
@@ -100,8 +105,15 @@ impl User {
         Ok(())
 
     }
-    pub fn verify_password(&self, password: &[u8]) -> Result<bool, CustomError> {
-        argon2::verify_encoded(&self.password, password)
-            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)))
+
+}
+
+impl From<User> for Users {
+    fn from(user: User) -> Self {
+        Users {
+            id: i32,
+            username: user.username,
+            password: user.password,
+        }
     }
 }

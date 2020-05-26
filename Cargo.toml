@@ -29,3 +29,5 @@ actix-cors = "0.2.0"
 rustls = "0.16"
 rand = "0.7.3"
 rust-argon2 = "0.8"
+actix-session = "0.3.0"
+actix-redis = {version="0.8.2", features = ["web"] }
