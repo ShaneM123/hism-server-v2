@@ -1,6 +1,7 @@
 use actix_web::http::StatusCode;
 use actix_web::{HttpResponse, ResponseError};
 use diesel::result::Error as DieselError;
+use actix_http::error::Error as Actix_httpError;
 use serde::Deserialize;
 use serde_json::json;
 use std::fmt;
@@ -25,7 +26,10 @@ impl fmt::Display for CustomError {
         f.write_str(self.error_message.as_str())
     }
 }
-
+impl From<Actix_httpError> for CustomError{
+    fn from(error: Actix_httpError) -> Self {
+        CustomError::new(500, error.to_string())    }
+}
 impl From<DieselError> for CustomError {
     fn from(error: DieselError) -> CustomError{
         match error {

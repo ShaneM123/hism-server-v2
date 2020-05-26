@@ -14,7 +14,7 @@ use std::fs::File;
 use std::io::BufReader;
 use rustls::internal::pemfile::{certs, rsa_private_keys};
 use rustls::{NoClientAuth, ServerConfig};
-use actix_redis::{redisSession, RedisSession};
+use actix_redis::{RedisSession};
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
@@ -47,6 +47,8 @@ async fn main() -> std::io::Result<()>{
     let port = 8443;
 
     let redis_port = env::var("REDIS_PORT").expect("Redis port not set");
+    let redis_host = env::var("REDIS_HOST").expect("Redis port not set");
+
     println!("starting http server at {:?}", port);
     HttpServer::new(move|| {
         App::new()

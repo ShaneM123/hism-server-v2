@@ -4,6 +4,8 @@ use crate::schema::users;
 use diesel::prelude::*;
 use argon2::{Config, verify_encoded};
 use rand::Rng;
+use uuid::Uuid;
+//TODO: introduce Uuid//
 
 #[derive(Queryable, Debug, Deserialize, Serialize, AsChangeset, PartialEq, Insertable)]
 #[table_name = "users"]
@@ -15,7 +17,7 @@ pub struct User {
 #[derive(Queryable, PartialEq, Identifiable, Debug, Deserialize, Serialize, AsChangeset, Insertable)]
 #[table_name = "users"]
 pub struct Users {
-    pub id: i32,
+    pub id: Uuid,
     pub username: String,
    #[serde(skip_serializing)]
     pub password: String,
@@ -32,15 +34,17 @@ impl Users {
             //.filter(users::password.eq(user.password))
             .select((users::id, users::username, users::password,))
             .first::<Users>(conn)?;
-        argon2::verify_encoded(&theuser.password,&user.password.as_bytes())
-            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)));
+        /*argon2::verify_encoded(&theuser.password,&user.password.as_bytes())
+            .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)));*/
         Ok(theuser)
     }
-    pub fn create_user(conn: &SqliteConnection, mut user: User) -> Result<Self, CustomError> {
+    pub fn create_user(conn: &SqliteConnection, user: User) -> Result<Self, CustomError> {
+        let mut user = Users::from(user);
         user.hash_password()?;
         conn.transaction(|| {
             diesel::insert_into( users::table)
                 .values((
+                    users::id.eq(&user.id),
                     users::username.eq(&user.username.to_string()),
                     users::password.eq(&user.password.to_string()),
                     ))
@@ -111,7 +115,7 @@ impl User {
 impl From<User> for Users {
     fn from(user: User) -> Self {
         Users {
-            id: i32,
+            id: Uuid::new_v4(),
             username: user.username,
             password: user.password,
         }
