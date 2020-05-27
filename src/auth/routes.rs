@@ -18,9 +18,9 @@ async fn create(pool: web::Data<Pool>, user: web::Json<User>) -> Result<HttpResp
 async fn finduser(pool: web::Data<Pool>, credentials: web::Json<User>, session: Session) -> Result<HttpResponse, CustomError>{
     let conn = &pool.get().unwrap();
     let user = Users::findusername(conn, credentials.into_inner())?;
-    let is_valid= user.verify_password(credentials.password.as_bytes())?;
+    let is_valid= user.verify_password(user.password.as_bytes())?;
     if is_valid == true {
-        session.set("user_id", user.id)?;
+        session.set("user_id", &user.id)?;
         session.renew();
 
         Ok(HttpResponse::Ok().json(user))

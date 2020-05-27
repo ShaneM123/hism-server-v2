@@ -5,7 +5,7 @@ use serde_json::json;
 use crate::Pool;
 
 #[get("/users/{id}")]
-async fn find(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, CustomError>{
+async fn find(pool: web::Data<Pool>, id: web::Path<String>) -> Result<HttpResponse, CustomError>{
     let conn = &pool.get().unwrap();
     let user = Users::find(conn, id.into_inner())?;
     Ok(HttpResponse::Ok().json(user))
@@ -28,7 +28,7 @@ async fn create(pool: web::Data<Pool>, user: web::Json<User>) -> Result<HttpResp
 #[put("/users/{id}")]
 async fn update(
     pool: web::Data<Pool>,
-    id: web::Path<i32>,
+    id: web::Path<String>,
     user: web::Json<User>,
 ) -> Result<HttpResponse, CustomError> {
     let conn = &pool.get().unwrap();
@@ -38,7 +38,7 @@ async fn update(
 }
 
 #[delete("/users/{id}")]
-async fn delete(pool: web::Data<Pool>,id: web::Path<i32>) -> Result<HttpResponse, CustomError> {
+async fn delete(pool: web::Data<Pool>,id: web::Path<String>) -> Result<HttpResponse, CustomError> {
     let conn = &pool.get().unwrap();
 
     let deleted_user = Users::delete(conn, id.into_inner())?;

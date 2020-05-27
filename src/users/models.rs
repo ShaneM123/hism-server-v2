@@ -17,14 +17,14 @@ pub struct User {
 #[derive(Queryable, PartialEq, Identifiable, Debug, Deserialize, Serialize, AsChangeset, Insertable)]
 #[table_name = "users"]
 pub struct Users {
-    pub id: Uuid,
+    pub id: String,
     pub username: String,
    #[serde(skip_serializing)]
     pub password: String,
 }
 
 impl Users {
-    pub fn find(conn: &SqliteConnection, id: i32) -> Result<Self, CustomError> {
+    pub fn find(conn: &SqliteConnection, id: String) -> Result<Self, CustomError> {
         let user = users::table.filter(users::id.eq(id)).first(conn)?;
         Ok(user)
     }
@@ -67,7 +67,7 @@ impl Users {
     }*/
 
 
-    pub fn update(conn: &SqliteConnection, id: i32, user: User) -> Result<Self, CustomError> {
+    pub fn update(conn: &SqliteConnection, id: String, user: User) -> Result<Self, CustomError> {
         conn.transaction(|| {
             diesel::insert_into( users::table)
                 .values((users::id.eq(&id), users::username.eq(&user.username)))
@@ -79,7 +79,7 @@ impl Users {
         })
     }
 
-    pub fn delete(conn: &SqliteConnection, id: i32) -> Result<usize, CustomError> {
+    pub fn delete(conn: &SqliteConnection, id: String) -> Result<usize, CustomError> {
         let res = diesel::delete( users::table.filter(users::id.eq(id))).execute(conn)?;
         Ok(res)
     }
@@ -88,6 +88,17 @@ impl Users {
     pub fn verify_password(&self, password: &[u8]) -> Result<bool, CustomError> {
         argon2::verify_encoded(&self.password, password)
             .map_err(|e| CustomError::new(500, format!("Failed to verify password: {}", e)))
+    }
+
+    pub fn hash_password(&mut self) -> Result<(), CustomError> {
+        let salt: [u8; 32] = rand::thread_rng().gen();
+        let config = Config::default();
+
+        self.password = argon2::hash_encoded(self.password.as_bytes(), &salt, &config)
+            .map_err(|e| CustomError::new(500, format!("Failed to hash password: {}", e)))?;
+
+        Ok(())
+
     }
 }
 
@@ -115,7 +126,7 @@ impl User {
 impl From<User> for Users {
     fn from(user: User) -> Self {
         Users {
-            id: Uuid::new_v4(),
+            id: Uuid::new_v4().to_string(),
             username: user.username,
             password: user.password,
         }
