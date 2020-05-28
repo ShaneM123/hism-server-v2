@@ -19,6 +19,7 @@ async fn finduser(pool: web::Data<Pool>, credentials: web::Json<User>, session: 
     let conn = &pool.get().unwrap();
     let user = Users::findusername(conn, credentials.into_inner())?;
     let is_valid= user.verify_password(user.password.as_bytes())?;
+
     if is_valid == true {
         session.set("user_id", &user.id)?;
         session.renew();
