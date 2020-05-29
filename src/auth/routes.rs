@@ -34,7 +34,7 @@ async fn finduser(pool: web::Data<Pool>, credentials: web::Json<User>, session: 
 
 #[post("/logout")]
 async fn sign_out(session: Session) -> Result<HttpResponse, CustomError> {
-    let id: Option<Uuid> = session.get("user_id")?;
+    let id: Option<String> = session.get("user_id")?;
 
     if let Some(_) = id {
         session.purge();
