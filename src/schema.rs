@@ -1,6 +1,6 @@
 table! {
     users (id) {
-        id -> Integer,
+        id -> Text,
         username -> Text,
         password -> Text,
     }
