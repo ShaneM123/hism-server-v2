@@ -28,9 +28,9 @@ impl Users {
         let user = users::table.filter(users::id.eq(id)).first(conn)?;
         Ok(user)
     }
-    pub fn findusername(conn: &SqliteConnection, user: User) -> Result<Self, CustomError> {
+    pub fn findusername(conn: &SqliteConnection, user: String) -> Result<Self, CustomError> {
         let theuser = users::table
-            .filter(users::username.eq(user.username))
+            .filter(users::username.eq(user))
             //.filter(users::password.eq(user.password))
             .select((users::id, users::username, users::password,))
             .first::<Users>(conn)?;
