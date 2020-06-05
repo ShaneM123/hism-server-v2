@@ -66,7 +66,7 @@ async fn main() -> std::io::Result<()>{
             .wrap(middleware::Logger::default())
             .configure(auth::init_routes)
     })
-        .bind_rustls("127.0.0.1:8443",config)?
+        .bind_rustls("0.0.0.0:8443",config)?
         .run()
         .await
 
