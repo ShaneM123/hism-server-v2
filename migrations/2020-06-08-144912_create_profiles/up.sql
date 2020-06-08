@@ -1,0 +1,5 @@
+CREATE TABLE profiles (
+    profileid INTEGER PRIMARY KEY NOT NULL,
+    bio VARCHAR NOT NULL
+
+)

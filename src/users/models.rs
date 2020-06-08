@@ -11,6 +11,7 @@ use uuid::Uuid;
 #[table_name = "users"]
 pub struct User {
     pub username: String,
+    pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
 }
@@ -19,7 +20,8 @@ pub struct User {
 pub struct Users {
     pub id: String,
     pub username: String,
-   #[serde(skip_serializing)]
+    pub email: String,
+    #[serde(skip_serializing)]
     pub password: String,
 }
 
@@ -47,7 +49,8 @@ impl Users {
                     users::id.eq(&user.id),
                     users::username.eq(&user.username.to_string()),
                     users::password.eq(&user.password.to_string()),
-                    ))
+                    users::email.eq(&user.email.to_string()),
+                ))
                 .execute(conn)?;
 
             let user = users::table
@@ -129,6 +132,7 @@ impl From<User> for Users {
             id: Uuid::new_v4().to_string(),
             username: user.username,
             password: user.password,
+            email: user.email,
         }
     }
 }
