@@ -1,5 +1,6 @@
 CREATE TABLE profiles (
     profileid INTEGER PRIMARY KEY NOT NULL,
-    bio VARCHAR NOT NULL
+    id VARCHAR FORGEIN KEY REFERENCES users,
+    bio VARCHAR
 
 )

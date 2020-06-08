@@ -44,6 +44,16 @@ impl Users {
         let mut user = Users::from(user);
         user.hash_password()?;
         conn.transaction(|| {
+            diesel::insert_into( profiles::table)
+                .values((
+                    // pk is auto incremented //
+                    profiles::id.eq(&user.id),
+                ))
+                .execute(conn)?;
+            /*.filter(profiles::id.eq(&user.id.to_string())).first(conn)?;*/
+            Ok(user)}); //need to tweak this, maybe put this in a seperate function?
+
+            conn.transaction(|| {
             diesel::insert_into( users::table)
                 .values((
                     users::id.eq(&user.id),
