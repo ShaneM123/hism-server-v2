@@ -5,7 +5,7 @@ use diesel::prelude::*;
 use argon2::{Config, verify_encoded};
 use rand::Rng;
 use uuid::Uuid;
-//TODO: introduce Uuid//
+//TODO: figure out how to change uuid to binary safely, implement profile and community pages//
 
 #[derive(Queryable, Debug, Deserialize, Serialize, AsChangeset, PartialEq, Insertable)]
 #[table_name = "users"]
@@ -129,6 +129,58 @@ impl From<User> for Users {
             id: Uuid::new_v4().to_string(),
             username: user.username,
             password: user.password,
+        }
+    }
+}
+
+
+#[derive(Queryable, Debug, Deserialize, Serialize, AsChangeset, PartialEq, Insertable)]
+#[table_name = "profiles"]
+pub struct Profile {
+    pub id: String,
+    pub bio: String,
+    pub age: i32,
+    pub community: String,
+}
+#[derive(Queryable, PartialEq, Identifiable, Debug, Deserialize, Serialize, AsChangeset, Insertable)]
+#[table_name = "profiles"]
+pub struct Profiles {
+    pub profile_id: i32,
+    pub id: String,
+    pub bio: String,
+    pub age: i32,
+    pub community: String,
+}
+
+impl Profiles {
+    pub fn create_profile(conn: &SqliteConnection, profile: profile) -> Result<Self, CustomError>{
+          let mut profile = Profiles::from(profile);
+        conn.transaction(|| {
+            diesel::insert_into( profiles::table)
+                .values((
+                    profiles::id.eq(&profile.id),
+                    profiles::bio.eq(&profile.bio.to_string()),
+                    profiles::age.eq(&profile.age),
+                    profiles::bio.eq(&profile.bio.to_string()),
+                ))
+                .execute(conn)?;
+
+            let profile = users::table
+                .filter(profiles::id.eq(&profile.id.to_string())).first(conn)?;
+            Ok(profile)
+        })
+    }
+
+}
+
+impl From<Profile> for Profiles {
+    fn from(profile: Profile) -> Self {
+        Profiles {
+            profile_id: 0,
+            id: profile.id,
+            bio: profile.bio,
+            age: profile.age,
+            community: profile.community,
         }
     }
 }
