@@ -69,11 +69,21 @@ async fn create_profile(pool: web::Data<Pool>, profile: web::Json<Users>) -> Res
     Ok(HttpResponse::Ok().json(profile))
 }
 
+#[post("/updateprofiles")]
+async fn update_profile(pool: web::Data<Pool>, profile: web::Json<Profile>) -> Result<HttpResponse, ResponseErrorWrapper> {
+    let conn = &pool.get().unwrap();
+
+    let profile = Profiles::update_profile(conn, profile.into_inner())?;
+    Ok(HttpResponse::Ok().json(profile))
+}
+
 pub fn init_routes(config: &mut web::ServiceConfig){
     config.service(finduser);
     config.service(who_am_i);
     config.service(sign_out);
     config.service(create);
     config.service(create_profile);
+    config.service(update_profile);
+
 
 }
