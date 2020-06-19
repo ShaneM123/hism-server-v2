@@ -171,14 +171,16 @@ impl Profiles {
         })
     }
 
-    pub fn update(conn: &SqliteConnection, id: String, profile: Profile) -> Result<Self, ResponseErrorWrapper> {
+    pub fn update_profile(conn: &SqliteConnection, profile: Profile) -> Result<Self, ResponseErrorWrapper> {
+        let mut profile = Profiles::from(profile);
         conn.transaction(|| {
-            diesel::insert_into( profiles::table)
-                .values((profiles.id.eq(&id), profiles::username.eq(&profile.username)))
+            diesel::update( profiles::table.filter(profiles::id.eq(&profile.id)))
+                .set((profiles::bio.eq(&profile.bio), profiles::age.eq(&profile.age), (profiles::community.eq(&profile.community)
+                )))
                 .execute(conn)?;
 
             let profile = profiles::table
-                .filter(profiles::id.eq(&id)).first(conn)?;
+                .filter(profiles::id.eq(&profile.id)).first(conn)?;
             Ok(profile)
         })
     }
