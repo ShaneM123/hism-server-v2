@@ -153,20 +153,19 @@ pub struct Profiles {
 }
 
 impl Profiles {
-    pub fn create_profile(conn: &SqliteConnection, user: Users) -> Result<Self, ResponseErrorWrapper>{
-          let mut profile = Profiles::from(user);
+    pub fn create_profile(conn: &SqliteConnection, id: String) -> Result<Self, ResponseErrorWrapper>{
         conn.transaction(|| {
             diesel::insert_into( profiles::table)
                 .values((
-                    profiles::id.eq(&profile.id.to_string()),
-                    profiles::bio.eq(&profile.bio.to_string()),
-                    profiles::age.eq(&profile.age),
-                    profiles::community.eq(&profile.community.to_string()),
+                    profiles::id.eq(&id.to_string()),
+                    profiles::bio.eq(""),
+                    profiles::age.eq(0),
+                    profiles::community.eq(""),
                 ))
                 .execute(conn)?;
 
             let profile = profiles::table
-                .filter(profiles::id.eq(&profile.id.to_string())).first(conn)?;
+                .filter(profiles::id.eq(id)).first(conn)?;
             Ok(profile)
         })
     }
@@ -183,6 +182,10 @@ impl Profiles {
                 .filter(profiles::id.eq(&profile.id)).first(conn)?;
             Ok(profile)
         })
+    }
+    pub fn find_profile(conn: &SqliteConnection, id: String) -> Result<Self, ResponseErrorWrapper> {
+        let user = profiles::table.filter(profiles::id.eq(id)).first(conn)?;
+        Ok(user)
     }
 
 }

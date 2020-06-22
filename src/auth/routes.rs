@@ -6,12 +6,13 @@ use serde_json::json;
 use crate::Pool;
 use uuid::Uuid;
 
+// dd password verification //
 #[post("/createusers")]
 async fn create(pool: web::Data<Pool>, user: web::Json<User>) -> Result<HttpResponse, ResponseErrorWrapper> {
     let conn = &pool.get().unwrap();
 
     let user = Users::create_user(conn, user.into_inner())?;
-
+    // NEED TO REFACTOR THIS TO MAKE USER AND PROFILE CREATION MORE STREAMLINED //
     Ok(HttpResponse::Ok().json(user))
 }
 
@@ -61,11 +62,11 @@ async fn who_am_i(pool: web::Data<Pool>, session: Session) -> Result<HttpRespons
     }
 }
 
-#[post("/createprofiles")]
-async fn create_profile(pool: web::Data<Pool>, profile: web::Json<Users>) -> Result<HttpResponse, ResponseErrorWrapper> {
+#[get("/createprofiles/{id}")]
+async fn create_profile(pool: web::Data<Pool>, id: web::Path<String>) -> Result<HttpResponse, ResponseErrorWrapper> {
     let conn = &pool.get().unwrap();
 
-    let profile = Profiles::create_profile(conn, profile.into_inner())?;
+    let profile = Profiles::create_profile(conn, id.into_inner())?;
     Ok(HttpResponse::Ok().json(profile))
 }
 
@@ -77,6 +78,14 @@ async fn update_profile(pool: web::Data<Pool>, profile: web::Json<Profile>) -> R
     Ok(HttpResponse::Ok().json(profile))
 }
 
+#[get("/viewprofile/{id}")]
+async fn view_profile(pool: web::Data<Pool>, id: web::Path<String>) -> Result<HttpResponse, ResponseErrorWrapper> {
+    let conn = &pool.get().unwrap();
+
+    let profile = Profiles::find_profile(conn, id.into_inner())?;
+    Ok(HttpResponse::Ok().json(profile))
+}
+
 pub fn init_routes(config: &mut web::ServiceConfig){
     config.service(finduser);
     config.service(who_am_i);
@@ -84,6 +93,5 @@ pub fn init_routes(config: &mut web::ServiceConfig){
     config.service(create);
     config.service(create_profile);
     config.service(update_profile);
-
-
+    config.service(view_profile);
 }
