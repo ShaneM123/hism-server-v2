@@ -103,14 +103,14 @@ impl Users {
 }
 
 
-impl User {
+/*impl User {
 /*    fn from(user: User) -> User {
         User {
             username: user.username,
             password: user.password,
         }
 }*/
-    pub fn hash_password(&mut self) -> Result<(), ResponseErrorWrapper> {
+/*    pub fn hash_password(&mut self) -> Result<(), ResponseErrorWrapper> {
         let salt: [u8; 32] = rand::thread_rng().gen();
         let config = Config::default();
 
@@ -119,9 +119,9 @@ impl User {
 
         Ok(())
 
-    }
+    }*/
 
-}
+}*/
 
 impl From<User> for Users {
     fn from(user: User) -> Self {
@@ -186,6 +186,11 @@ impl Profiles {
     pub fn find_profile(conn: &SqliteConnection, id: String) -> Result<Self, ResponseErrorWrapper> {
         let user = profiles::table.filter(profiles::id.eq(id)).first(conn)?;
         Ok(user)
+    }
+
+    pub fn delete(conn: &SqliteConnection, id: String) -> Result<usize, ResponseErrorWrapper> {
+        let res = diesel::delete( profiles::table.filter(profiles::id.eq(id))).execute(conn)?;
+        Ok(res)
     }
 
 }
