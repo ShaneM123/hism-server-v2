@@ -23,6 +23,7 @@ mod users;
 mod schema;
 mod error_handler;
 mod auth;
+mod inventory;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()>{
@@ -65,9 +66,11 @@ async fn main() -> std::io::Result<()>{
             )
             .wrap(middleware::Logger::default())
             .configure(auth::init_routes)
+            .configure(inventory::init_routes)
     })
         .bind_rustls("0.0.0.0:8443",config)?
         .run()
         .await
 
 }
+
