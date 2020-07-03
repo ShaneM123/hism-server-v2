@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use crate::error_handler::ResponseErrorWrapper;
 use crate::schema::*;
 use diesel::prelude::*;
-use rand::Rng;
 
 #[derive(Queryable, Debug, Deserialize, Serialize, AsChangeset, PartialEq, Insertable)]
 #[table_name = "inventories"]

@@ -24,6 +24,7 @@ mod schema;
 mod error_handler;
 mod auth;
 mod inventory;
+mod location;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()>{
