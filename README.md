@@ -1,10 +1,10 @@
 
 <h1><code>HISM</code></h1>
-  <strong>An inventory management system for neighbourhoods during a crisis: <a href="https://github.com/ShaneM123/hism">hism</a>.</strong>
+  <strong>An Inventory management system for neighbourhoods during a crisis: <a href="https://github.com/ShaneM123/hism">hism</a>.</strong>
   <p> 
   <strong> This is the backend server and database for Hism </strong>
 
-<p> There are two ways to run this erver, either build it yourself or use the docker container to do the lifting for you</p>
+<p> There are two ways to run this server, either build it yourself or use the docker container to do the lifting for you</p>
 <h2> Via Docker: </h2>
 <p>Make sure Docker is installed. Then go to the project folder and type the follow command: </p>
 <p><code>docker build . --tag hism:v01</code>  </p>
