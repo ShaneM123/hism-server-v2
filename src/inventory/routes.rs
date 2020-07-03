@@ -56,6 +56,19 @@ async fn find_inventory(pool: web::Data<Pool>, session: Session, inventory_id: w
     }
 }
 
+#[delete("/deleteinventory/{id}")]
+async fn delete_inventory(pool: web::Data<Pool>,session: Session, inventory_id: web::Path<i32>) -> Result<HttpResponse, ResponseErrorWrapper> {
+    let conn = &pool.get().unwrap();
+    let id: Option<String> = session.get("user_id")?;
+    if let Some(id) = id {
+        let deleted_user = Inventories::delete_inventory(conn, inventory_id.into_inner())?;
+        Ok(HttpResponse::Ok().json(json!({"deleted": deleted_user})))
+    }
+    else{
+        Err(ResponseErrorWrapper::new(401, "Unauthorized".to_string()))
+    }
+}
+
 #[post("/createitem")]
 async fn create_item(pool: web::Data<Pool>, session: Session, item: web::Json<Item>) -> Result<HttpResponse, ResponseErrorWrapper> {
     let conn = &pool.get().unwrap();
@@ -115,23 +128,13 @@ async fn delete_item(pool: web::Data<Pool>,session: Session, item_id: web::Path<
         Err(ResponseErrorWrapper::new(401, "Unauthorized".to_string()))
     }
 }
-#[delete("/deleteinventory/{id}")]
-async fn delete_inventory(pool: web::Data<Pool>,session: Session, inventory_id: web::Path<i32>) -> Result<HttpResponse, ResponseErrorWrapper> {
-    let conn = &pool.get().unwrap();
-    let id: Option<String> = session.get("user_id")?;
-    if let Some(id) = id {
-        let deleted_user = Inventories::delete_inventory(conn, inventory_id.into_inner())?;
-        Ok(HttpResponse::Ok().json(json!({"deleted": deleted_user})))
-    }
-    else{
-        Err(ResponseErrorWrapper::new(401, "Unauthorized".to_string()))
-    }
-}
+
 
 pub fn init_routes(config: &mut web::ServiceConfig){
     config.service(create_inventory);
     config.service(find_inventory);
     config.service(update_inventory);
+    config.service(delete_inventory);
     config.service(create_item);
     config.service(find_item);
     config.service(update_item);
