@@ -2,9 +2,9 @@
 <h1><code>HISM</code></h1>
   <strong>An Inventory management system for neighbourhoods during a crisis: <a href="https://github.com/ShaneM123/hism">hism</a>.</strong>
   <p> 
-  <strong> This is the backend server and database for Hism </strong>
-
-<p> There are two ways to run this server, either build it yourself or use the docker container to do the lifting for you</p>
+  <strong> This is the backend server and database for <a href="https://github.com/ShaneM123/hism">Hism</a> </strong>
+<p>! Hism is still in development. location tracking and frontend design are still in progress !</p>
+<p> There are two ways to run this server, either build it yourself or use the docker container to do the lifting for you </p>
 <h2> Via Docker: </h2>
 <p>Make sure Docker is installed. Then go to the project folder and type the follow command: </p>
 <p><code>docker build . --tag hism:v01</code>  </p>
@@ -19,3 +19,23 @@
 <p>below is the manual build if you're feeling adventurous</p> 
 <h2>Manual build:</h2>
 <p>firstly, you will need redis server installed for session caching, sqlite (and its library file) for the backend. Along with Rust and Diesel ORM for rust framework</p>
+
+<h2> possible API Requests </h2>
+<p> until the frontend is complete, API requests are the best way to communicate with the backend currently.</p>
+
+<p>firstly, you can create a user with the following curl request:</p>
+<p>curl --insecure -H 'Content-Type: application/json' -X POST https://0.0.0.0:8443/createusers -d '{"username":"Tommy","password":"pass123"}'
+</p>
+<p>once a user is created, you can login:</p>
+<p>curl --insecure -c mycookie.txt  -H 'Content-Type: application/json' -X POST https://0.0.0.0:8443/login -d '{"username":"Tommy","password":"pass123"}'
+</p>
+
+<p>a quick text to check that youre still logged in: </p>
+<p>curl --insecure -b mycookie.txt -H 'Content-Type: application/json' -X GET https://0.0.0.0:8443/whoami
+</p>
+
+<p>Finally, to log out:</p>
+<p>curl --insecure -b mycookie.txt -H 'Content-Type: application/json' -X POST https://0.0.0.0:8443/logout</p>
+
+
+<p>there are many other possible requests, that I won't list here, but feel free to look at the 'routes' in the source code to see what requests are possible </p>
