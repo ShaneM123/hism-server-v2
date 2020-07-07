@@ -43,4 +43,5 @@
 <h2>Development Progress</h2>
 <p>a screenshot of the current draft of the database is listed as Database_design.png </p>
 <p>a screenshot fo the Trello page is listed as Project_Management_Trello.png </p>
+<p>UI design on <p href="https://www.figma.com/file/8aaVeHBygqL4F2Me0130OP/HISM-Login-SignUp?node-id=0%3A1">Figma</p>
 
