@@ -1,7 +1,7 @@
 
 <h1><code>HISM</code></h1>
   <strong>An Inventory management system for neighbourhoods during a crisis: <a href="https://github.com/ShaneM123/hism">hism</a>.</strong>
-  <p> 
+  <p> <p>Hism is a way to connect people with their neighbours to allow them to trade items, ie a hammer for a screwdriver. Users can see their neighbours inventory and what they have in excess and request to trade or borrow items at will. Hism will use location tracking to ensure the user is trading with nearby neighbours</p>
   <strong> This is the backend server and database for <a href="https://github.com/ShaneM123/hism">Hism</a> </strong>
 <p>! Hism is still in development. location tracking and frontend design are still in progress !</p>
 <p> There are two ways to run this server, either build it yourself or use the docker container to do the lifting for you </p>
