@@ -39,3 +39,8 @@
 
 
 <p>there are many other possible requests, that I won't list here, but feel free to look at the 'routes' in the source code to see what requests are possible </p>
+
+<h2>Development Progress</h2>
+<p>a screenshot of the current draft of the database is listed as Database_design.png </p>
+<p>a screenshot fo the Trello page is listed as Project_Management_Trello.png </p>
+
