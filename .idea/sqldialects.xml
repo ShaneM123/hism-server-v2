@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$/migrations/2020-05-11-144929_create_users/up.sql" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/migrations/2020-06-16-141101_create_profiles/up.sql" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/migrations/2020-07-03-141009_create_locations/up.sql" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/migrations/2020-07-08-145958_create_userjunction/up.sql" dialect="SQLite" />
   </component>
 </project>
